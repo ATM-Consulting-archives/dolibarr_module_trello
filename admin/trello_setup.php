@@ -108,16 +108,54 @@ print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
 // Example with a yes / no select
 $var=!$var;
 print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("ParamLabel").'</td>';
+print '<td>'.$langs->trans("TRELLO_API_KEY").'</td>';
 print '<td align="center" width="20">&nbsp;</td>';
 print '<td align="right" width="300">';
 print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="set_CONSTNAME">';
-print $form->selectyesno("CONSTNAME",$conf->global->CONSTNAME,1);
+print '<input type="hidden" name="action" value="set_TRELLO_API_KEY">';
+print '<input type="text" name="TRELLO_API_KEY" value="'.$conf->global->TRELLO_API_KEY.'" />';
 print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
 print '</form>';
 print '</td></tr>';
+
+
+
+if(!empty($conf->global->TRELLO_API_KEY)) {
+	$var=!$var;
+	print '<tr '.$bc[$var].'>';
+	print '<td>'.$langs->trans("TRELLO_API_KEYauthorize").'</td>'; //TODO en fait doit être fait je sais pas tout les combiens
+	print '<td align="center" width="20">&nbsp;</td>';
+	print '<td align="right" width="300">';
+	
+	print '<input name="authorizeTrello" type="button" class="button" value="'.$langs->trans("Authorize").'">';
+	print '</td></tr>';
+?>
+<script type="text/javascript">
+var authenticationSuccess = function() { console.log('Successful authentication'); };
+var authenticationFailure = function() { console.log('Failed authentication'); };
+
+$('input[name=authorizeTrello]').click(function() {
+	Trello.authorize({
+		type: 'popup',
+		name: '<?php echo $langs->transnoentities('TrelloApplication') ?>',
+		scope: {
+			read: 'true'
+			,write: 'true'
+			,account : 'true' 
+		},
+		expiration: 'never',
+		success: authenticationSuccess,
+		error: authenticationFailure
+	});
+});
+
+</script>
+
+<?php 
+
+}
+
 
 print '</table>';
 
